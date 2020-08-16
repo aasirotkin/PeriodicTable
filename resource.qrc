@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/data">
+        <file>periodic_data.csv</file>
+        <file>period_group_data.csv</file>
+    </qresource>
+    <qresource prefix="/"/>
+</RCC>
