@@ -34,7 +34,7 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
-    bool setElementData(const QString& data);
+    bool setItemData(const QString &data) override;
 
 private:
     GridPos makeGridPos_(const int period, const int group, const int number);

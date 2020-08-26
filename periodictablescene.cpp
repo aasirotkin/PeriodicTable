@@ -33,7 +33,6 @@ void PeriodicTableScene::scaleItems(const int width, const int height)
         GraphicsItem* item = static_cast<GraphicsItem*>(base_item);
         item->setRect(item_rect);
         item->setFont(font);
-        item->updateTextRect(item_width_, item_height_);
         item->relocation();
     }
 }
@@ -53,7 +52,7 @@ void PeriodicTableScene::createChemicalItemsFromResFile_()
         {
             QString element_data = stream.readLine();
             ChemicalElement* item = new ChemicalElement();
-            item->setElementData(element_data);
+            item->setItemData(element_data);
             addItem(item);
         }
     }
@@ -71,7 +70,7 @@ void PeriodicTableScene::createPeriodGroupItems_()
             if (period_group_data.isEmpty())
                 continue;
             TextItem* item = new TextItem();
-            item->setTextData(period_group_data);
+            item->setItemData(period_group_data);
             addItem(item);
         }
     }

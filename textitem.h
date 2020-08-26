@@ -12,7 +12,7 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
-    void setTextData(const QString& data);
+    bool setItemData(const QString &data) override;
 };
 
 #endif // TEXTITEM_H

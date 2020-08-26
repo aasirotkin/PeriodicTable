@@ -27,10 +27,10 @@ void ChemicalElement::paint(QPainter *painter,
     }
     painter->drawPath(path);
     painter->setFont(rfont());
-    painter->drawText(rtextRect(), element_data_.symbol);
+    painter->drawText(rboundingRect(), Qt::AlignCenter, rtext());
 }
 
-bool ChemicalElement::setElementData(const QString &data)
+bool ChemicalElement::setItemData(const QString &data)
 {
     static const QString sep{" "};
     const QStringList data_list = data.split(sep);

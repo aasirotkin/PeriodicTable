@@ -28,12 +28,6 @@ void GraphicsItem::setText(const QString &text)
     text_ = text;
 }
 
-void GraphicsItem::updateTextRect(const float width, const float height)
-{
-    text_rect_ = FontCreator::createRect(width, height,
-                                         font_, text_);
-}
-
 void GraphicsItem::appendMainGridPoses(const GraphicsItem::GridPos &pos)
 {
     main_grid_poses_.append(pos);

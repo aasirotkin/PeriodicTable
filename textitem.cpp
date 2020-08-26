@@ -23,10 +23,10 @@ void TextItem::paint(QPainter *painter,
         painter->drawPath(path);
     }
     painter->setFont(rfont());
-    painter->drawText(rtextRect(), rtext());
+    painter->drawText(rboundingRect(), Qt::AlignCenter, rtext());
 }
 
-void TextItem::setTextData(const QString &data)
+bool TextItem::setItemData(const QString &data)
 {
     static const QString sep{" "};
     const QStringList data_list = data.split(sep);
@@ -35,4 +35,5 @@ void TextItem::setTextData(const QString &data)
     {
         appendMainGridPoses(GridPos::fromString(data_list.at(i)));
     }
+    return true;
 }

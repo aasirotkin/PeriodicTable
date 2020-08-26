@@ -47,11 +47,11 @@ public:
     void setRect(const QRectF& rect);
     void setFont(const QFont& font);
     void setText(const QString& text);
-    void updateTextRect(const float width, const float height);
     void appendMainGridPoses(const GridPos& pos);
     void relocation();
     void resetGridPos();
     void setHovered(const bool hovered);
+    virtual bool setItemData(const QString& data) = 0;
 
     QPointF sceneCenterPos() const;
     QPointF rightCenterPos() const;
@@ -64,7 +64,6 @@ public:
     const QRectF& rboundingRect() const { return bounding_rect_; }
     const QFont& rfont() const;
     const QString& rtext() const { return text_; }
-    const QRectF& rtextRect() const { return text_rect_; }
     const GridPos& rmainGridPos() const { return main_grid_poses_.first(); }
     const int& rradius() const { return radius_; }
 
@@ -75,7 +74,6 @@ private:
     QRectF bounding_rect_;
     QFont font_;
     QString text_;
-    QRectF text_rect_;
     QList<GridPos> main_grid_poses_;
     // radius value in percents
     const int radius_{10};

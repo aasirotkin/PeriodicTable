@@ -62,18 +62,6 @@ public:
 
         return font;
     }
-
-    static QRectF createRect(const float width, const float height,
-                      const QFont& font, const QString& text)
-    {
-        // fm - font metrics
-        const QFontMetrics fm(font);
-        const float text_width = fm.horizontalAdvance(text);
-        const float text_height = fm.height();
-        const float rect_x = 0.5 * (width - text_width);
-        const float rect_y = 0.5 * (height - text_height);
-        return {rect_x, rect_y, width - rect_x, height - rect_y};
-    }
 };
 
 #endif // FONTCREATOR_H
