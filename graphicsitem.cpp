@@ -1,5 +1,4 @@
 #include "graphicsitem.h"
-#include "fontcreator.h"
 
 GraphicsItem::GraphicsItem(QGraphicsItem *parent) :
     QGraphicsItem(parent)

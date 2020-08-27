@@ -17,6 +17,8 @@ public:
 private:
     void createChemicalItemsFromResFile_();
     void createPeriodGroupItems_();
+    void initMaxLengthText_();
+    QFont createFont_();
     void rearrange_();
     QList<GraphicsItem::GridPos> createGridNumbers_(
             const int max_row, const int max_col) const;
@@ -53,6 +55,7 @@ private:
     float max_scene_height_;
 
 private:
+    QString max_text_length_;
     GraphicsItem* current_item_{nullptr};
     GraphicsItem* hovered_item_{nullptr};
 };

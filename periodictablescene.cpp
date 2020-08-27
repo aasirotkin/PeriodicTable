@@ -1,5 +1,4 @@
 #include "periodictablescene.h"
-#include "fontcreator.h"
 #include "chemicalelement.h"
 #include "textitem.h"
 
@@ -7,6 +6,8 @@
 #include <QTextStream>
 #include <QTransform>
 #include <QGraphicsSceneMouseEvent>
+#include <QFont>
+#include <QFontMetrics>
 #include <QDebug>
 
 PeriodicTableScene::PeriodicTableScene(QObject *parent) :
@@ -14,6 +15,7 @@ PeriodicTableScene::PeriodicTableScene(QObject *parent) :
 {
     createChemicalItemsFromResFile_();
     createPeriodGroupItems_();
+    initMaxLengthText_();
     rearrange_();
 }
 
@@ -24,10 +26,8 @@ void PeriodicTableScene::scaleItems(const int width, const int height)
     item_width_ = max_scene_width_ / cols_count_;
     item_height_ = max_scene_height_ / rows_count_;
 
-    static const QString base_string{"WW"};
     const QRectF item_rect = QRectF(0.0, 0.0, item_width_, item_height_);
-    const QFont font = FontCreator::getInstance().createFont(
-                item_width_, item_height_, QString(base_string));
+    const QFont font = createFont_();
     for (auto* base_item : items())
     {
         GraphicsItem* item = static_cast<GraphicsItem*>(base_item);
@@ -74,6 +74,38 @@ void PeriodicTableScene::createPeriodGroupItems_()
             addItem(item);
         }
     }
+}
+
+void PeriodicTableScene::initMaxLengthText_()
+{
+    max_text_length_ = QString("");
+    for (auto* item : items())
+    {
+        GraphicsItem* element = static_cast<GraphicsItem*>(item);
+        if (element->rtext().length() > max_text_length_.length())
+        {
+            max_text_length_ = element->rtext();
+        }
+    }
+}
+
+QFont PeriodicTableScene::createFont_()
+{
+    QFont font(QString(""));
+    float point_size_f = 0.9;
+    int length = 0;
+    int height = 0;
+    do
+    {
+        point_size_f += 0.1;
+        font.setPointSizeF(point_size_f);
+        // fm - font metrics
+        const QFontMetrics fm(font);
+        length = fm.horizontalAdvance(max_text_length_);
+        height = fm.height();
+    }
+    while(length < item_width_ && height < item_height_ && point_size_f < 50.0);
+    return font;
 }
 
 void PeriodicTableScene::rearrange_()

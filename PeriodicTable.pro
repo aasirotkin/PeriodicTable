@@ -25,7 +25,6 @@ SOURCES += \
 
 HEADERS += \
     chemicalelement.h \
-    fontcreator.h \
     graphicsitem.h \
     mainwindow.h \
     periodictablescene.h \
