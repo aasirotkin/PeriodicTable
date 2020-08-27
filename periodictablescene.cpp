@@ -53,6 +53,8 @@ void PeriodicTableScene::createChemicalItemsFromResFile_()
             QString element_data = stream.readLine();
             ChemicalElement* item = new ChemicalElement();
             item->setItemData(element_data);
+            connect(&item->timer(), SIGNAL(update(const GridPos&)),
+                    this, SLOT(updateItem(const GridPos&)));
             addItem(item);
         }
     }
@@ -71,6 +73,8 @@ void PeriodicTableScene::createPeriodGroupItems_()
                 continue;
             TextItem* item = new TextItem();
             item->setItemData(period_group_data);
+            connect(&item->timer(), SIGNAL(update(const GridPos&)),
+                    this, SLOT(updateItem(const GridPos&)));
             addItem(item);
         }
     }
@@ -85,6 +89,10 @@ void PeriodicTableScene::initMaxLengthText_()
         if (element->rtext().length() > max_text_length_.length())
         {
             max_text_length_ = element->rtext();
+        }
+        if (element->rhint().length() > max_text_length_.length())
+        {
+            max_text_length_ = element->rhint();
         }
     }
 }
@@ -112,7 +120,7 @@ void PeriodicTableScene::rearrange_()
 {
     srand(time(NULL));
 
-    QList<GraphicsItem::GridPos> poses = createGridNumbers_(
+    QList<GridPos> poses = createGridNumbers_(
                 rows_count_,
                 cols_count_);
 
@@ -126,14 +134,14 @@ void PeriodicTableScene::rearrange_()
     }
 }
 
-QList<GraphicsItem::GridPos> PeriodicTableScene::createGridNumbers_(
+QList<GridPos> PeriodicTableScene::createGridNumbers_(
         const int max_row, const int max_col) const
 {
-    QList<GraphicsItem::GridPos> poses;
+    QList<GridPos> poses;
 
     while (poses.count() < items_count_)
     {
-        GraphicsItem::GridPos value{rand() % max_row, rand() % max_col};
+        GridPos value{rand() % max_row, rand() % max_col};
         if (!poses.contains(value))
         {
             poses.append(value);
@@ -148,7 +156,13 @@ GraphicsItem *PeriodicTableScene::itemAt_(const QPointF &point) const
     return static_cast<GraphicsItem*>(itemAt(point, QTransform()));
 }
 
-GraphicsItem::GridPos PeriodicTableScene::gridPos_(
+GraphicsItem *PeriodicTableScene::itemAt_(const GridPos &pos) const
+{
+    return itemAt_(QPointF((pos.col + 0.5) * item_width_,
+                           (pos.row + 0.5) * item_height_));
+}
+
+GridPos PeriodicTableScene::gridPos_(
         const QPointF &point) const
 {
     const int rows_behind = static_cast<int>(point.y() / item_height_);
@@ -221,6 +235,7 @@ void PeriodicTableScene::mouseMoveEvent_(const QPointF &delta)
     checkBoundingRect_(pos);
 
     current_item_->setPos(pos);
+    current_item_->setGridPos(gridPos_(current_item_->sceneCenterPos()));
 }
 
 void PeriodicTableScene::mouseReleaseEvent_()
@@ -238,7 +253,7 @@ void PeriodicTableScene::resetHoveredItem_()
     if (hovered_item_)
     {
         hovered_item_->setHovered(false);
-        update(hovered_item_->sceneBoundingRect());
+        QGraphicsScene::update(hovered_item_->sceneBoundingRect());
         hovered_item_ = nullptr;
     }
 }
@@ -251,11 +266,11 @@ void PeriodicTableScene::mouseHoveredEvent_(const QPointF &pos)
         if (hovered_item_ && item != hovered_item_)
         {
             hovered_item_->setHovered(false);
-            update(hovered_item_->sceneBoundingRect());
+            QGraphicsScene::update(hovered_item_->sceneBoundingRect());
         }
         hovered_item_ = item;
         hovered_item_->setHovered(true);
-        update(hovered_item_->sceneBoundingRect());
+        QGraphicsScene::update(hovered_item_->sceneBoundingRect());
     }
     else
     {
@@ -269,7 +284,6 @@ void PeriodicTableScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if (current_item_)
     {
         current_item_->setZValue(1.0);
-        current_item_->resetGridPos();
         current_item_->setHovered(false);
     }
     QGraphicsScene::mousePressEvent(event);
@@ -302,4 +316,23 @@ void PeriodicTableScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         mouseReleaseEvent_();
     }
     QGraphicsScene::mouseReleaseEvent(event);
+}
+
+void PeriodicTableScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    GraphicsItem* item = itemAt_(event->scenePos());
+    if (item)
+    {
+        item->showHint();
+    }
+    QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
+void PeriodicTableScene::updateItem(const GridPos &pos)
+{
+    GraphicsItem* item = itemAt_(pos);
+    if (item)
+    {
+        QGraphicsScene::update(item->sceneBoundingRect());
+    }
 }

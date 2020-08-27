@@ -20,10 +20,11 @@ private:
     void initMaxLengthText_();
     QFont createFont_();
     void rearrange_();
-    QList<GraphicsItem::GridPos> createGridNumbers_(
+    QList<GridPos> createGridNumbers_(
             const int max_row, const int max_col) const;
     GraphicsItem* itemAt_(const QPointF& point) const;
-    GraphicsItem::GridPos gridPos_(const QPointF &point) const;
+    GraphicsItem* itemAt_(const GridPos& pos) const;
+    GridPos gridPos_(const QPointF &point) const;
     QPointF nearestPos_(const QPointF& point) const;
     bool itemExistsAt_(const QPointF& point) const;
     void checkHorizontalPos_(
@@ -40,6 +41,10 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+
+public slots:
+    void updateItem(const GridPos &pos);
 
 private:
     static const int chemical_items_count{118};

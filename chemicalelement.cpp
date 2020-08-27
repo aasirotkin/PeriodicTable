@@ -27,7 +27,7 @@ void ChemicalElement::paint(QPainter *painter,
     }
     painter->drawPath(path);
     painter->setFont(rfont());
-    painter->drawText(rboundingRect(), Qt::AlignCenter, rtext());
+    painter->drawText(rboundingRect(), Qt::AlignCenter, rdisplayedText());
 }
 
 bool ChemicalElement::setItemData(const QString &data)
@@ -50,11 +50,12 @@ bool ChemicalElement::setItemData(const QString &data)
                                      element_data_.number));
 
     setText(element_data_.symbol);
+    setHint(GridPos::toString(rmainGridPos()));
 
     return true;
 }
 
-GraphicsItem::GridPos ChemicalElement::makeGridPos_(
+GridPos ChemicalElement::makeGridPos_(
         const int period, const int group, const int number)
 {
     static const QList<int> seven_asterisk{58, 59, 60, 61, 62, 63, 64,

@@ -23,7 +23,7 @@ void TextItem::paint(QPainter *painter,
         painter->drawPath(path);
     }
     painter->setFont(rfont());
-    painter->drawText(rboundingRect(), Qt::AlignCenter, rtext());
+    painter->drawText(rboundingRect(), Qt::AlignCenter, rdisplayedText());
 }
 
 bool TextItem::setItemData(const QString &data)
@@ -35,5 +35,6 @@ bool TextItem::setItemData(const QString &data)
     {
         appendMainGridPoses(GridPos::fromString(data_list.at(i)));
     }
+    setHint(GridPos::toString(rmainGridPos()));
     return true;
 }

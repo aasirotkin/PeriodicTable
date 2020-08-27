@@ -1,13 +1,14 @@
 #include "graphicsitem.h"
 
 GraphicsItem::GraphicsItem(QGraphicsItem *parent) :
-    QGraphicsItem(parent)
+    QGraphicsItem(parent),
+    timer_(is_hint_enable_, grid_pos_)
 {
     setFlags(QGraphicsItem::ItemIsMovable |
              QGraphicsItem::ItemSendsGeometryChanges);
 }
 
-void GraphicsItem::setGridPos(const GraphicsItem::GridPos &pos)
+void GraphicsItem::setGridPos(const GridPos &pos)
 {
     grid_pos_ = pos;
 }
@@ -27,7 +28,12 @@ void GraphicsItem::setText(const QString &text)
     text_ = text;
 }
 
-void GraphicsItem::appendMainGridPoses(const GraphicsItem::GridPos &pos)
+void GraphicsItem::setHint(const QString &hint)
+{
+    hint_ = hint;
+}
+
+void GraphicsItem::appendMainGridPoses(const GridPos &pos)
 {
     main_grid_poses_.append(pos);
 }
@@ -86,7 +92,24 @@ const QFont &GraphicsItem::rfont() const
     return font_;
 }
 
-bool GraphicsItem::mainGridPosContains(const GraphicsItem::GridPos &pos) const
+const QString &GraphicsItem::rdisplayedText() const
+{
+    return (is_hint_enable_) ? hint_ : text_;
+}
+
+bool GraphicsItem::mainGridPosContains(const GridPos &pos) const
 {
     return main_grid_poses_.contains(pos);
+}
+
+void GraphicsItem::showHint()
+{
+    if (!is_hint_enable_)
+    {
+        timer_.showHint();
+    }
+    else
+    {
+        timer_.stop();
+    }
 }
